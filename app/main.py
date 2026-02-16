@@ -37,3 +37,9 @@ def debug_user(db: Session = Depends(get_db)):
     result = db.execute(text("SELECT current_user;"))
     return {"user": result.scalar()}
 
+@app.get("/force-drop-jobs")
+def force_drop_jobs(db: Session = Depends(get_db)):
+    db.execute(text("DROP TABLE IF EXISTS public.jobs CASCADE;"))
+    db.commit()
+    return {"status": "jobs dropped"}
+
