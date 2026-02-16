@@ -7,9 +7,5 @@ class Job(Base):
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String)
     description = Column(String)
-    skills = Column(String)  # comma-separated
+    skills = Column(JSON)   # ← FIXED
     embedding = Column(JSON)
-
-    @property
-    def skills_list(self):
-        return self.skills.split(",") if self.skills else []
