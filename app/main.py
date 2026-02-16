@@ -23,6 +23,17 @@ def debug_db(db: Session = Depends(get_db)):
     result = db.execute(text("SELECT current_database();"))
     return {"database": result.scalar()}
 
+@app.get("/fix-skills-column")
+def fix_skills_column(db: Session = Depends(get_db)):
+    db.execute(text("""
+        ALTER TABLE jobs
+        ALTER COLUMN skills TYPE jsonb
+        USING skills::jsonb;
+    """))
+    db.commit()
+    return {"status": "fixed"}
+
+
 @app.get("/debug-columns")
 def debug_columns(db: Session = Depends(get_db)):
     result = db.execute(text("""
@@ -52,3 +63,14 @@ def check_column_type(db: Session = Depends(get_db)):
         AND column_name = 'skills';
     """))
     return {"type": result.scalar()}
+@app.get("/check-column-type")
+def check_column_type(db: Session = Depends(get_db)):
+    result = db.execute(text("""
+        SELECT data_type, udt_name
+        FROM information_schema.columns
+        WHERE table_name = 'jobs'
+        AND column_name = 'skills';
+    """))
+    row = result.fetchone()
+    return {"result": row}
+
