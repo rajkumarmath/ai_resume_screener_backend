@@ -48,21 +48,6 @@ def debug_user(db: Session = Depends(get_db)):
     result = db.execute(text("SELECT current_user;"))
     return {"user": result.scalar()}
 
-@app.get("/force-drop-jobs")
-def force_drop_jobs(db: Session = Depends(get_db)):
-    db.execute(text("DROP TABLE IF EXISTS public.jobs CASCADE;"))
-    db.commit()
-    return {"status": "jobs dropped"}
-
-@app.get("/check-column-type")
-def check_column_type(db: Session = Depends(get_db)):
-    result = db.execute(text("""
-        SELECT data_type
-        FROM information_schema.columns
-        WHERE table_name = 'jobs'
-        AND column_name = 'skills';
-    """))
-    return {"type": result.scalar()}
 @app.get("/check-column-type")
 def check_column_type(db: Session = Depends(get_db)):
     result = db.execute(text("""
@@ -71,6 +56,7 @@ def check_column_type(db: Session = Depends(get_db)):
         WHERE table_name = 'jobs'
         AND column_name = 'skills';
     """))
-    row = result.fetchone()
-    return {"result": row}
+    return {"result": result.fetchone()}
+
+
 
