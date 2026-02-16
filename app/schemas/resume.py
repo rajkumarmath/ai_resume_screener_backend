@@ -4,7 +4,7 @@ from typing import List, Optional
 class ResumeCreate(BaseModel):
     file_path: str
     parsed_text: Optional[str] = None
-    skills: Optional[List[str]] = []  # ✅ Add skills here too
+    skills: Optional[List[str]] = None  # ✅ Add skills here too
 
 class ResumeResponse(BaseModel):
     id: int
@@ -24,3 +24,4 @@ class ResumeOut(BaseModel):
 
     class Config:
         orm_mode = True
+
