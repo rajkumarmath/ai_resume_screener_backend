@@ -3,6 +3,10 @@ from app.routes import users, resumes, jobs
 from app.database import Base, engine
 from app.database import get_db
 from sqlalchemy import text
+from app.models.job import Job
+from app.models.resume import Resume
+from app.models.user import User
+
 app = FastAPI(title="AI Resume System", version="1.0")
 Base.metadata.create_all(bind=engine)
 
@@ -32,3 +36,4 @@ def debug_columns(db: Session = Depends(get_db)):
 def debug_user(db: Session = Depends(get_db)):
     result = db.execute(text("SELECT current_user;"))
     return {"user": result.scalar()}
+
