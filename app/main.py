@@ -1,14 +1,24 @@
 from fastapi import FastAPI, Depends
+from fastapi.middleware.cors import CORSMiddleware
 from app.routes import users, resumes, jobs
 from app.database import Base, engine
 from app.database import get_db
 from sqlalchemy import text
 from app.models.job import Job
+
 from app.models.resume import Resume
 from app.models.user import User
 
 app = FastAPI(title="AI Resume System", version="1.0")
 Base.metadata.create_all(bind=engine)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # change later in production
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(users.router, prefix="/users", tags=["Users"])
 app.include_router(resumes.router, prefix="/resumes", tags=["Resumes"])
@@ -57,6 +67,7 @@ def check_column_type(db: Session = Depends(get_db)):
         AND column_name = 'skills';
     """))
     return {"result": result.fetchone()}
+
 
 
 
