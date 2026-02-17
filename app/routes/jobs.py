@@ -6,8 +6,10 @@ from app.models.job import Job
 from app.models.resume import Resume
 from app.schemas.job import JobCreate, JobResponse
 from app.services.openai_matcher import get_embedding, cosine_similarity
+from typing import List
 
 router = APIRouter()
+
 
 
 @router.post("/", response_model=JobResponse)
@@ -67,6 +69,11 @@ def match_resumes(job_id: int, db: Session = Depends(get_db)):
 
     return results
 
+@router.get("/", response_model=List[JobResponse])
+def get_jobs(db: Session = Depends(get_db)):
+    jobs = db.query(Job).order_by(Job.id.desc()).all()
+    return jobs
+
 @router.get("/{job_id}/match-with-explanation")
 def match_resumes_with_explanation(job_id: int, db: Session = Depends(get_db)):
 
@@ -96,4 +103,5 @@ def match_resumes_with_explanation(job_id: int, db: Session = Depends(get_db)):
     results.sort(key=lambda x: x["score"], reverse=True)
 
     return results
+
 
